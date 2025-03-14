@@ -32,6 +32,7 @@ android {
         implementation "io.noties.markwon:ext-strikethrough:$markwonVersion"
         implementation "io.noties.markwon:linkify:$markwonVersion"
         implementation "io.noties.markwon:recycler:$markwonVersion"
+        implementation "rustls:rustls-platform-verifier:latest.release"
 
         implementation project(":terminal-view")
         implementation project(":termux-shared")
@@ -235,4 +236,12 @@ afterEvaluate {
     android.applicationVariants.all { variant ->
         variant.javaCompileProvider.get().dependsOn(downloadBootstraps)
     }
+}
+
+apply plugin: 'org.mozilla.rust-android-gradle.rust-android'
+
+cargo {
+    module  = "./src/main/rust/rustls_integration"       // Or whatever directory contains your Cargo.toml
+    libname = "rustls_integration"          // Or whatever matches Cargo.toml's [package] name.
+    targets = ["arm64","arm","x86","x86_64"]
 }
